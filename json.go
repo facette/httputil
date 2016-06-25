@@ -2,6 +2,7 @@ package httputil
 
 import (
 	"encoding/json"
+	"errors"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -11,6 +12,10 @@ import (
 // BindJSON binds JSON data received from request or response to an interface.
 func BindJSON(v interface{}, out interface{}) error {
 	var body io.ReadCloser
+
+	if GetContentType(v) != "application/json" {
+		return errors.New("invalid Content-Type, expecting application/json")
+	}
 
 	switch v.(type) {
 	case *http.Request:
