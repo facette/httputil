@@ -19,6 +19,7 @@ func Test_BindJSON(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	defer req.Body.Close()
 
 	req.Header.Set("Content-Type", "application/json; charset=utf-8")
 
