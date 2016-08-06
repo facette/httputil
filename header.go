@@ -1,12 +1,12 @@
 package httputil
 
 import (
+	"mime"
 	"net/http"
-	"strings"
 )
 
 // GetContentType returns the HTTP 'Content-Type' header value.
-func GetContentType(v interface{}) string {
+func GetContentType(v interface{}) (string, error) {
 	var header http.Header
 
 	switch v.(type) {
@@ -15,15 +15,13 @@ func GetContentType(v interface{}) string {
 	case *http.Response:
 		header = v.(*http.Response).Header
 	default:
-		return ""
+		return "", ErrInvalidInterface
 	}
 
-	ct := header.Get("Content-Type")
-
-	index := strings.Index(ct, ";")
-	if index != -1 {
-		return ct[:index]
+	ct, _, err := mime.ParseMediaType(header.Get("Content-Type"))
+	if err != nil {
+		return "", err
 	}
 
-	return ct
+	return ct, nil
 }

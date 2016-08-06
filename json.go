@@ -2,7 +2,7 @@ package httputil
 
 import (
 	"encoding/json"
-	"errors"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -13,8 +13,8 @@ import (
 func BindJSON(v interface{}, out interface{}) error {
 	var body io.ReadCloser
 
-	if GetContentType(v) != "application/json" {
-		return errors.New("invalid Content-Type, expecting application/json")
+	if ct, _ := GetContentType(v); ct != "application/json" {
+		return fmt.Errorf("invalid %q Content-Type, expecting \"application/json\"", ct)
 	}
 
 	switch v.(type) {

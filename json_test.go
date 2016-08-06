@@ -20,6 +20,8 @@ func Test_BindJSON(t *testing.T) {
 		t.Fatal(err)
 	}
 
+	req.Header.Set("Content-Type", "application/json; charset=utf-8")
+
 	result := make(map[string]int)
 	if err := BindJSON(req, &result); err != nil {
 		t.Fatal(err)
