@@ -44,7 +44,7 @@ func WriteJSON(rw http.ResponseWriter, v interface{}, code int) error {
 		return err
 	}
 
-	rw.Header().Set("Content-Type", "application/json; charset=utf-8")
+	rw.Header().Set("Content-Type", "application/json")
 	rw.WriteHeader(code)
 	rw.Write(body)
 	rw.Write([]byte("\n"))
