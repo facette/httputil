@@ -3,52 +3,45 @@ package httputil
 import (
 	"net/http"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func Test_GetContentType(t *testing.T) {
-	if result, _ := GetContentType(nil); result != "" {
-		t.Logf("\nExpected %q\nbut got  %q", "", result)
-		t.Fail()
-	}
+	actual, err := GetContentType(nil)
+	assert.Equal(t, ErrInvalidInterface, err)
+	assert.Empty(t, actual)
 
 	req, err := http.NewRequest("GET", "/", nil)
-	if err != nil {
-		t.Fatal(err)
-	}
+	assert.Nil(t, err)
 
-	if result, _ := GetContentType(req); result != "" {
-		t.Logf("\nExpected %q\nbut got  %q", "", result)
-		t.Fail()
-	}
+	actual, err = GetContentType(req)
+	assert.NotNil(t, err)
+	assert.Empty(t, actual)
 
 	req.Header.Add("Content-Type", "application/json")
-	if result, _ := GetContentType(req); result != "application/json" {
-		t.Logf("\nExpected %q\nbut got  %q", "application/json", result)
-		t.Fail()
-	}
+	actual, err = GetContentType(req)
+	assert.Nil(t, err)
+	assert.Equal(t, "application/json", actual)
 
 	req.Header.Set("Content-Type", "application/json; charset=utf-8")
-	if result, _ := GetContentType(req); result != "application/json" {
-		t.Logf("\nExpected %q\nbut got  %q", "application/json", result)
-		t.Fail()
-	}
+	actual, err = GetContentType(req)
+	assert.Nil(t, err)
+	assert.Equal(t, "application/json", actual)
 
 	resp := &http.Response{Header: http.Header{}}
 
-	if result, _ := GetContentType(resp); result != "" {
-		t.Logf("\nExpected %q\nbut got  %q", "", result)
-		t.Fail()
-	}
+	actual, err = GetContentType(resp)
+	assert.NotNil(t, err)
+	assert.Empty(t, actual)
 
 	resp.Header.Add("Content-Type", "application/json")
-	if result, _ := GetContentType(resp); result != "application/json" {
-		t.Logf("\nExpected %q\nbut got  %q", "application/json", result)
-		t.Fail()
-	}
+	actual, err = GetContentType(resp)
+	assert.Nil(t, err)
+	assert.Equal(t, "application/json", actual)
 
 	resp.Header.Set("Content-Type", "application/json; charset=utf-8")
-	if result, _ := GetContentType(resp); result != "application/json" {
-		t.Logf("\nExpected %q\nbut got  %q", "application/json", result)
-		t.Fail()
-	}
+	actual, err = GetContentType(resp)
+	assert.Nil(t, err)
+	assert.Equal(t, "application/json", actual)
 }
