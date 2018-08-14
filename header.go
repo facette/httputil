@@ -12,15 +12,17 @@ func GetContentType(v interface{}) (string, error) {
 	switch v.(type) {
 	case *http.Request:
 		header = v.(*http.Request).Header
+
 	case *http.Response:
 		header = v.(*http.Response).Header
+
 	default:
 		return "", ErrInvalidInterface
 	}
 
 	ct, _, err := mime.ParseMediaType(header.Get("Content-Type"))
 	if err != nil {
-		return "", err
+		return "", ErrInvalidContentType
 	}
 
 	return ct, nil

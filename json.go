@@ -5,24 +5,25 @@ import (
 	"io"
 	"io/ioutil"
 	"net/http"
-	"os"
 )
 
 // BindJSON binds JSON data received from request or response to an interface.
 func BindJSON(v interface{}, out interface{}) error {
 	var body io.ReadCloser
 
-	if ct, _ := GetContentType(v); ct != "application/json" {
+	ct, err := GetContentType(v)
+	if err != nil {
+		return err
+	} else if ct != "application/json" {
 		return ErrInvalidContentType
 	}
 
 	switch v.(type) {
 	case *http.Request:
 		body = v.(*http.Request).Body
+
 	case *http.Response:
 		body = v.(*http.Response).Body
-	default:
-		return os.ErrInvalid
 	}
 
 	data, err := ioutil.ReadAll(body)
